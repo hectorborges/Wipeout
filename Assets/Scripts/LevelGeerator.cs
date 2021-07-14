@@ -38,7 +38,7 @@ public class LevelGeerator : MonoBehaviour
     {
         short totalBlocks = 0;
 
-        GameObject initBlock = Instantiate(originBlock, origin, Quaternion.Euler(originRotation), null);
+        GameObject lastBlock = Instantiate(originBlock, origin, Quaternion.Euler(originRotation), null);
 
         for (int i = 0; i < Mathf.RoundToInt(Random.Range(minimumGenerationSteps, maximumGenerationSteps)); i++)
         {
@@ -50,7 +50,12 @@ public class LevelGeerator : MonoBehaviour
     private void Awake()
     {
         Random.InitState(generatorSeed);
+
         CalculateOffsets();
+
+        foreach (KeyValuePair<GameObject, Transform[]> entry in connections)
+            Debug.Log(entry);
+
         GenerateBlocks();
         
     }
