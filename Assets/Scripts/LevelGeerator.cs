@@ -42,7 +42,7 @@ public class LevelGeerator : MonoBehaviour
     private Vector3 CalculatePosition(Vector3 lastBlockPosition, Vector3 thisBlockConnectorPosition)
     {
         Debug.Log("Last Block: " + lastBlockPosition + " This Connector: " + thisBlockConnectorPosition);
-        return thisBlockConnectorPosition - lastBlockPosition;
+        return lastBlockPosition - thisBlockConnectorPosition;
     }
 
     private Quaternion CalculateRotation(Vector3 lastBlockEuler, Vector3 thisConnectorEuler)
@@ -77,6 +77,8 @@ public class LevelGeerator : MonoBehaviour
                 Quaternion thisBlockRotation = CalculateRotation(lastBlock.transform.rotation.eulerAngles, objectConnector.rotation.eulerAngles);
 
                 lastBlock = Instantiate(thisBlock, thisBlockPosition, thisBlockRotation);
+                lastBlock.name = "Block: " + totalBlocks.ToString();
+                totalBlocks++;
             }
         }
     }

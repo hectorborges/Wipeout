@@ -286,8 +286,8 @@ MonoBehaviour:
   - {fileID: 987558102966685120, guid: 1fe5b04a1a6a0004fb83157431dc407b, type: 3}
   terminationBlock: {fileID: 987558102966685120, guid: 37c69e4c3f5ac9549bb187b790246738,
     type: 3}
-  minimumGenerationSteps: 5
-  maximumGenerationSteps: 10
+  minimumGenerationSteps: 100
+  maximumGenerationSteps: 200
   maximumBlocksAllowed: 50
   generatorSeed: 0
   origin: {x: 0, y: 0, z: 0}
