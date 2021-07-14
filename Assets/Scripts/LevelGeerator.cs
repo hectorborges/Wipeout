@@ -28,15 +28,32 @@ public class LevelGeerator : MonoBehaviour
 
     /*============Functions & Methods============*/
 
-    private void CalculateOffsets()
+    private void ConnectionsInit()
     {
+        connections.Clear();
+
+        connections.Add(originBlock, originBlock.GetComponentsInChildren<Transform>());
+        connections.Add(terminationBlock, terminationBlock.GetComponentsInChildren<Transform>());
+        
         foreach (GameObject block in levelblocks)
-            connections.Add(block, block.gameObject.GetComponentsInChildren<Transform>());
+            connections.Add(block, block.GetComponentsInChildren<Transform>());
+    }
+
+    private Vector3 CalculatePosition(Vector3 lastBlockPosition, Vector3 thisBlockConnectorPosition)
+    {
+        Debug.Log("Last Block: " + lastBlockPosition + " This Connector: " + thisBlockConnectorPosition);
+        return thisBlockConnectorPosition - lastBlockPosition;
+    }
+
+    private Quaternion CalculateRotation(Vector3 lastBlockEuler, Vector3 thisConnectorEuler)
+    {
+        return Quaternion.Euler(new Vector3(270f, lastBlockEuler.y + thisConnectorEuler.y, 0f));
     }
 
     private void GenerateBlocks()
     {
         short totalBlocks = 0;
+        int thisBlockID = 0;
 
         GameObject lastBlock = Instantiate(originBlock, origin, Quaternion.Euler(originRotation), null);
 
@@ -44,6 +61,23 @@ public class LevelGeerator : MonoBehaviour
         {
             if (totalBlocks > maximumBlocksAllowed) return;
 
+            Transform[] objectConnectors = connections[levelblocks[thisBlockID]];
+            Debug.Log(objectConnectors[thisBlockID]);
+
+            foreach(Transform objectConnector in objectConnectors)
+            {
+                objectConnectors = connections[levelblocks[thisBlockID]];
+                Debug.Log(objectConnectors[thisBlockID]);
+
+                thisBlockID = Mathf.RoundToInt(Random.Range(0f, levelblocks.Length - 1));
+
+                GameObject thisBlock = levelblocks[Mathf.RoundToInt(Random.Range(0, levelblocks.Length))];
+
+                Vector3 thisBlockPosition = CalculatePosition(lastBlock.transform.position, objectConnector.localPosition);
+                Quaternion thisBlockRotation = CalculateRotation(lastBlock.transform.rotation.eulerAngles, objectConnector.rotation.eulerAngles);
+
+                lastBlock = Instantiate(thisBlock, thisBlockPosition, thisBlockRotation);
+            }
         }
     }
 
@@ -51,10 +85,7 @@ public class LevelGeerator : MonoBehaviour
     {
         Random.InitState(generatorSeed);
 
-        CalculateOffsets();
-
-        foreach (KeyValuePair<GameObject, Transform[]> entry in connections)
-            Debug.Log(entry);
+        ConnectionsInit();
 
         GenerateBlocks();
         
